@@ -1,0 +1,27 @@
+FROM registry.fedoraproject.org/fedora-toolbox:41
+
+RUN dnf -y upgrade \
+  && dnf config-manager addrepo --from-repofile=https://rpm.releases.hashicorp.com/fedora/hashicorp.repo \
+  && dnf -y install \
+    nvim \
+    tmux \
+    gcc \
+    golang \
+    rustup \
+    zig \
+    terraform \
+    packer \
+    hugo \
+    ansible \
+    kubectl \
+    helm \
+  https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm \
+  && rustup-init -y \
+  && dnf clean all
+# @TODO: install aws and azure CLI
+COPY podman /bin/
+RUN chmod +x /bin/podman
+
+RUN minikube config set rootless true
+RUN minikube config set driver podman
+RUN minikube config set container-runtime containerd
