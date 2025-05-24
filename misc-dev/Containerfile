@@ -1,24 +1,35 @@
 FROM registry.fedoraproject.org/fedora-toolbox:41
 
+COPY google-cloud-sdk.repo /etc/yum.repos.d/google-cloud-sdk.repo
+
 RUN dnf -y upgrade \
   && dnf config-manager addrepo --from-repofile=https://rpm.releases.hashicorp.com/fedora/hashicorp.repo \
+  && rpm --import https://packages.microsoft.com/keys/microsoft.asc \
   && dnf -y install \
     nvim \
     tmux \
+    jq \
     gcc \
     golang \
     rustup \
-    zig \
     terraform \
     packer \
     hugo \
     ansible \
     kubectl \
     helm \
-  https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm \
+    https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm \
+    https://packages.microsoft.com/config/rhel/9.0/packages-microsoft-prod.rpm \
+    azure-cli \
+    google-cloud-cli \
   && rustup-init -y \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+  && unzip awscliv2.zip \
+  && ./aws/install \
+  && rm awscliv2.zip \
+  && rm -r aws \
   && dnf clean all
-# @TODO: install aws and azure CLI
+
 COPY podman /bin/
 RUN chmod +x /bin/podman
 
