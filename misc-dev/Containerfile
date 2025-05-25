@@ -1,20 +1,27 @@
 FROM registry.fedoraproject.org/fedora-toolbox:41
 
-COPY google-cloud-sdk.repo /etc/yum.repos.d/google-cloud-sdk.repo
+COPY jfrog-cli.repo /etc/yum.repos.d/
+COPY google-cloud-sdk.repo /etc/yum.repos.d/
 
 RUN dnf -y upgrade \
   && dnf config-manager addrepo --from-repofile=https://rpm.releases.hashicorp.com/fedora/hashicorp.repo \
+  && dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
   && rpm --import https://packages.microsoft.com/keys/microsoft.asc \
+  && rpm --import https://releases.jfrog.io/artifactory/api/v2/repositories/jfrog-rpms/keyPairs/primary/public \
+  && rpm --import https://releases.jfrog.io/artifactory/api/v2/repositories/jfrog-rpms/keyPairs/secondary/public \
   && dnf -y install \
     nvim \
     tmux \
+    gh \
+    https://gitlab.com/gitlab-org/cli/-/releases/v1.57.0/downloads/glab_1.57.0_linux_amd64.rpm \
+    jfrog-cli-v2-jf \
     jq \
     gcc \
     golang \
     rustup \
     terraform \
     packer \
-    hugo \
+    vault \
     ansible \
     kubectl \
     helm \
@@ -28,6 +35,11 @@ RUN dnf -y upgrade \
   && ./aws/install \
   && rm awscliv2.zip \
   && rm -r aws \
+  && curl -L "https://github.com/gohugoio/hugo/releases/download/v0.147.5/hugo_extended_0.147.5_linux-amd64.tar.gz" -o "hugo.tar.gz" \
+  && mkdir hugo \
+  && tar -xvzf hugo.tar.gz -C hugo \
+  && cp hugo/hugo /bin \
+  && rm -r hugo \
   && dnf clean all
 
 COPY podman /bin/
