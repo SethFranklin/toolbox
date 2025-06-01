@@ -35,7 +35,7 @@ RUN dnf -y upgrade \
   && ./aws/install \
   && rm awscliv2.zip \
   && rm -r aws \
-  && curl -L "https://github.com/gohugoio/hugo/releases/download/v0.147.5/hugo_extended_0.147.5_linux-amd64.tar.gz" -o "hugo.tar.gz" \
+  && curl -L "https://github.com/gohugoio/hugo/releases/download/v0.147.7/hugo_extended_withdeploy_0.147.7_linux-amd64.tar.gz" -o "hugo.tar.gz" \
   && mkdir hugo \
   && tar -xvzf hugo.tar.gz -C hugo \
   && cp hugo/hugo /bin \
